@@ -1,0 +1,9 @@
+# Git ignore
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/

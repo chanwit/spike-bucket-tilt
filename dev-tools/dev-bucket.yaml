@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev-bucket
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-bucket
+  namespace: dev-bucket  
+  labels:
+    app: dev-bucket
+spec:
+  ports:
+  - port: 9000
+    name: dev-bucket
+  clusterIP: None
+  selector:
+    app: dev-bucket
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dev-bucket
+  namespace: dev-bucket
+  labels:
+     app: dev-bucket
+spec:
+  selector:
+    matchLabels:
+      app: dev-bucket
+  serviceName: dev-bucket
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dev-bucket
+    spec:
+      containers:
+      - name: dev-bucket
+        env:
+        - name: MINIO_ROOT_USER
+          value: "dev-bucket"
+        - name: MINIO_ROOT_PASSWORD
+          value: "dev-bucket123"
+        image: ghcr.io/chanwit/spike-bucket:f0780e9
+        args:
+        - server
+        - /data/dev-bucket/
+        - --console-address
+        - :9002
+        ports:
+        - containerPort: 9000
+          hostPort: 9000
+        # These volume mounts are persistent. Each pod in the StatefulSet
+        # gets a volume mounted based on this field.
+        volumeMounts:
+        - name: data
+          mountPath: /data
+  # These are converted to volume claims by the controller
+  # and mounted at the paths mentioned above.
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 1Gi

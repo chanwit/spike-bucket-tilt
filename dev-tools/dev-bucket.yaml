@@ -41,10 +41,10 @@ spec:
       - name: dev-bucket
         env:
         - name: MINIO_ROOT_USER
-          value: "dev-bucket"
+          value: "abc"
         - name: MINIO_ROOT_PASSWORD
-          value: "dev-bucket123"
-        image: ghcr.io/chanwit/spike-bucket:f0780e9
+          value: "abc123"
+        image: ghcr.io/chanwit/spike-bucket:d5576cd
         args:
         - server
         - /data/dev-bucket/

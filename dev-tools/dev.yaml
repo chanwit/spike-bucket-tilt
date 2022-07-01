@@ -11,8 +11,8 @@ metadata:
   name: dev-bucket-credentials
 type: Opaque
 stringData:
-  accesskey: dev-bucket
-  secretkey: dev-bucket123  
+  accesskey: abc
+  secretkey: abc123  
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: Bucket
@@ -24,7 +24,6 @@ spec:
   provider: generic
   bucketName: dev-bucket
   endpoint: dev-bucket.dev-bucket.svc.cluster.local:9000
-  region: us-east-1
   insecure: true
   secretRef:
     name: dev-bucket-credentials
@@ -40,4 +39,5 @@ spec:
   sourceRef:
     kind: Bucket
     name: dev-bucket
-  path: ./
+  path: ./deploy
+  targetNamespace: app
